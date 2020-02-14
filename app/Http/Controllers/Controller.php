@@ -17,6 +17,7 @@ class Controller extends BaseController
         $manf = new User;
         $manf->name = "Vasya";
         $manf->address = "vasya@gmail.com";
+        
     }
 
     public function getUsers()
