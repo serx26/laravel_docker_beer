@@ -11,5 +11,11 @@
 |
 */
 
-Route::get('/', '\App\Http\Controllers\Controller@createUser');
-Route::get('/', '\App\Http\Controllers\Controller@getUsers');
+Route::get('/', '\App\Http\Controllers\Controller@index');
+Route::post('/man/save', '\App\Http\Controllers\Controller@updateManufacturer');
+Route::post('/man/create', '\App\Http\Controllers\Controller@createManufacturer');
+Route::post('/man/delete', '\App\Http\Controllers\Controller@deleteManufacturer');
+
+
+
+

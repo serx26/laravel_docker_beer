@@ -1,96 +1,175 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Shady Smaoui</title>
+    <title>Perepelytsia Dmytro</title>
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+    <!-- Styles -->
+    <style>
+    </style>
+</head>
+<body>
+<div>
+    <div>
+        <ul id="manlist">
+            @foreach ($tmp as $man)
+                <li style="list-style-type: none;">
+                    <form method="POST">
+                        <input hidden name="id" value="{{$man->id}}">
+                        <span  style="margin-right: 5px " class="colt name">{{$man->name}}</span>
+                        <input name="name" style="display: none;" class="cole" type="text" value="{{$man->name}}">
+                        <span style="margin-right: 5px "  class="colt address">{{$man->address}}</span>
+                        <input name="address" style="display: none;" class="cole" type="text" value="{{$man->address}}">
+                        <input type="button"  class="edit" value="Редактировать"/>
+                        <input style="display: none" type="button"  class="save" value="Сохранить"/>
+                        <input type="button"  class="delete" value="Удалить"/>
+                    </form>
+                </li>
+            @endforeach
+        </ul>
 
-            .full-height {
-                height: 100vh;
-            }
+    </div>
+    <div>
+        <input  style=" width: 100px;" type="button"  class="add" value="Добавить"/>
+    </div>
+    <div id = "append" style="display:none">
+        <form method="POST">
+            <input hidden name="id" value="">
+            <span  style="margin-right: 5px; display: none;" class="colt name"></span>
+            <input name="name" class="cole" type="text" value="">
+            <span style="margin-right: 5px; display: none;"  class="colt address"></span>
+            <input name="address"  class="cole" type="text" value="">
+            <input style="display: none" type="button"  class="edit" value="Редактировать"/>
+            <input style="display: none" type="button"  class="save" value="Сохранить"/>
+            <input type="button"  class="create" value="Создать"/>
+            <input style="display: none" type="button"  class="delete" value="Удалить"/>
+        </form>
+    </div>
+    <div>
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
+    </div>
+</div>
+</body>
+<script>
+    $( document ).ready(function() {
 
-            .position-ref {
-                position: relative;
-            }
+        $(document).on('click', ".edit", function () {
+            $(this).parent().find(".colt").hide();
+            $(this).parent().find(".cole").show();
+            $(this).hide();
+            $(this).parent().find(".save").show();
+        });
 
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
+        $(document).on('click', ".save", function () {
+            if ($(this).parent().find('input[name="name"]').val() == ""){
+                return;
+            };if ($(this).parent().find('input[name="address"]').val() == ""){
+                return;
+            };
+            $(this).parent().find(".colt").show();
+            $(this).parent().find(".cole").hide();
+            $(this).hide();
+            $(this).parent().find(".edit").show();
 
-            .content {
-                text-align: center;
-            }
+            var form = $(this).parent();
+            var that = $(this);
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "post",
+                url: "/man/save",
+                data: form.serialize(),
+                success: function(){
+                    that.parent().find(".name").html(
+                        that.parent().find('input[name="name"]').val()
+                    );
+                    that.parent().find(".address").html(
+                        that.parent().find('input[name="address"]').val()
+                    );
+                },
+                error: function () {
 
-            .title {
-                font-size: 84px;
-            }
+                },
+            });
+        });
+        $(document).on('click', ".add", function () {
+            if ($(this).parent().prev().children().children().last().find(".colt").html() == ""){
+                return;
+            };
+            var cpy = $("#append").html();
+            $("#manlist").append('<li style="list-style-type: none;">' + cpy + '</li>');
 
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
+        });
+        $(document).on('click', ".create", function () {
+            if ($(this).parent().find('input[name="name"]').val() == ""){
+                return;
+            };if ($(this).parent().find('input[name="address"]').val() == ""){
+                return;
+            };
 
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
+            $(this).parent().find(".colt").show();
+            $(this).parent().find(".cole").hide();
+            $(this).hide();
+            $(this).parent().find(".edit").show();
+            $(this).parent().find(".delete").show();
+            var form = $(this).parent();
+            var that = $(this);
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "post",
+                url: "/man/create",
+                data: form.serialize(),
+                success: function(resp){
+                    that.parent().find(".name").html(
+                        that.parent().find('input[name="name"]').val()
+                    );
+                    that.parent().find(".address").html(
+                        that.parent().find('input[name="address"]').val()
+                    );
+                    that.parent().find('input[name="id"]').val(resp);
+                },
+                error: function () {
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
+                },
+            });
+        });
+        $(document).on('click', ".delete", function () {
+            $(this).parent().find(".colt").show();
+            $(this).parent().find(".cole").hide();
+            $(this).hide();
+            $(this).parent().find(".edit").show();
 
-            <div class="content">
-                <div class="title m-b-md">
-                    Shady Smaoui
-                </div>
+            var form = $(this).parent();
+            var that = $(this);
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "post",
+                url: "/man/delete",
+                data: form.serialize(),
+                success: function(){
+                    that.parent().parent().remove();
+                },
+                error: function () {
 
-                <div class="links">
-                    <a href="https://shadysmaoui.ca">website</a>
-                    <a href="https://veloxsolutions.ca">startup</a>
-                    <a href="https://www.linkedin.com/in/shady-smaoui/">linkediIn</a>
-                    <a href="https://github.com/shsma">GitHub</a>
-                </div>
-            </div>
-        </div>
-    </body>
+                },
+            });
+        });
+    });
+
+</script>
 </html>
