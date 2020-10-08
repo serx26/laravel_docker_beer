@@ -36,7 +36,12 @@
                 </div>
             </form>
         </div>
-        <ul id="manufacturerlist">
+        <div>
+            <em  style="margin-right: 5px " >Производитель</em>
+
+            <em style="margin-right: 5px ">Адрес производителя</em>
+        </div>
+        <ul id="manufacturerlist" style="padding: 0">
             @foreach ($manufacturer as $man)
                 <li class="view" style="list-style-type: none;">
                     <form method="POST">

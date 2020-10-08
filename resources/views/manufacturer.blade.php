@@ -21,7 +21,12 @@
 <body>
 <div>
     <div>
-        <ul id="manlist">
+        <em style="margin-right: 5px " >Производитель</em>
+
+        <em style="margin-right: 5px ">Адрес производителя</em>
+    </div>
+    <div>
+        <ul id="manlist" style="padding: 0">
             @foreach ($tmp as $man)
                 <li style="list-style-type: none;">
                     <form method="POST">

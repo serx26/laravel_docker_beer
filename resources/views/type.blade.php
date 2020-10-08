@@ -21,7 +21,12 @@
 <body>
 <div>
     <div>
-        <ul id="typelist">
+
+        <em style="margin-right: 5px " >Тип</em>
+
+    </div>
+    <div>
+        <ul id="typelist" style="padding: 0">
             @foreach ($tmp as $type)
                 <li style="list-style-type: none;">
                     <form method="POST">

@@ -137,12 +137,15 @@ class Controller extends BaseController
         return view('manufacturer_f', compact('tmp', 'type', 'manufacturer'));
     }
 
-    public function index()
+    public function beer_f_index()
     {
         $tmp = Beer::select('*')->get();
         $type = Type::select('*')->get();
         $manufacturer = Manufacturer::select('*')->get();
-        return view('index', compact('tmp', 'type', 'manufacturer'));
+        return view('beer_f', compact('tmp', 'type', 'manufacturer'));
+    }
+    public function index(){
+        return view('index');
     }
 
 }

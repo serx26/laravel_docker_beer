@@ -15,6 +15,7 @@ Route::get('/', '\App\Http\Controllers\Controller@index');
 Route::get('/manufacturer', '\App\Http\Controllers\Controller@manufacturer_index');
 Route::get('/beer', '\App\Http\Controllers\Controller@beer_index');
 Route::get('/type', '\App\Http\Controllers\Controller@type_index');
+Route::get('/beer_f', '\App\Http\Controllers\Controller@beer_f_index');
 Route::get('/manufacturer_f', '\App\Http\Controllers\Controller@manufacturer_f_index');
 
 Route::post('/manufacturer_e/save', '\App\Http\Controllers\Controller@updateManufacturer');
