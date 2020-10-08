@@ -9,36 +9,25 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Beer editor</title>
+    <title>Type editor</title>
 
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
+    <!-- Styles -->
+    <style>
+    </style>
 </head>
 <body>
 <div>
     <div>
-        <ul id="beerlist">
-            @foreach ($tmp as $beer)
+        <ul id="typelist">
+            @foreach ($tmp as $type)
                 <li style="list-style-type: none;">
                     <form method="POST">
-                        <input hidden name="id" value="{{$beer->id}}">
-                        <span  style="margin-right: 5px " class="colt name">{{$beer->name}}</span>
-                        <input name="name" style="display: none;" class="cole" type="text" value="{{$beer->name}}">
-                        <span style="margin-right: 5px " class="colt description">{{$beer->description}}</span>
-                        <input name="description" style="display: none;" class="cole" type="text" value="{{$beer->description}}">
-                        <span style="margin-right: 5px " class="colt type">{{$beer->types->name}}</span>
-                        <select id="type" name="type_id" style="display: none;" class="cole">
-                            @foreach($type as $typ)
-                                <option value = "{{$typ->id}}">{{$typ->name}}</option>
-                            @endforeach
-                        </select>
-                        <span style="margin-right: 5px " class="colt manufacturer">{{$beer->manufacturers->name}}</span>
-                        <select id="manufacts" name="manufacturer_id" style="display: none;" class="cole">
-                            @foreach($manufacturer as $man)
-                                <option  data-address="{{$man->address}}" value = "{{$man->id}}">{{$man->name}}</option>
-                            @endforeach
-                        </select>
-                        <span id="address" style="margin-right: 5px " >{{$beer->manufacturers->address}}</span>
+                        <input hidden name="id" value="{{$type->id}}">
+                        <span  style="margin-right: 5px " class="colt name">{{$type->name}}</span>
+                        <input name="name" style="display: none;" class="cole" type="text" value="{{$type->name}}">
                         <input type="button"  class="edit" value="Редактировать"/>
                         <input style="display: none" type="button"  class="save" value="Сохранить"/>
                         <input type="button"  class="delete" value="Удалить"/>
@@ -56,21 +45,6 @@
             <input hidden name="id" value="">
             <span  style="margin-right: 5px; display: none;" class="colt name"></span>
             <input name="name" class="cole" type="text" value="">
-            <span style="margin-right: 5px; display: none;"  class="colt description"></span>
-            <input name="description" class="cole" type="text" value="">
-            <span style="margin-right: 5px; display: none;"  class="colt type"></span>
-            <select id="type" name="type_id" class="cole">
-                @foreach($type as $typ)
-                    <option value = "{{$typ->id}}">{{$typ->name}}</option>
-                @endforeach
-            </select>
-            <span style="margin-right: 5px; display: none;"  class="colt manufacturer"></span>
-            <select id="manufacts" name="manufacturer_id" class="cole" id="manufacts">
-                @foreach($manufacturer as $man)
-                    <option value = "{{$man->id}}" data-address="{{$man->address}}">{{$man->name}}</option>
-                @endforeach
-            </select>
-            <span id="address"  style="margin-right: 5px;" >{{$manufacturer->first()->address}}</span>
             <input style="display: none" type="button"  class="edit" value="Редактировать"/>
             <input style="display: none" type="button"  class="save" value="Сохранить"/>
             <input type="button"  class="create" value="Создать"/>
@@ -91,14 +65,9 @@
             $(this).hide();
             $(this).parent().find(".save").show();
         });
-        $(document).on('change', "#manufacts", function (){
-            $('#address').html($(this).find('option:selected').data('address'));
-        });
 
         $(document).on('click', ".save", function () {
             if ($(this).parent().find('input[name="name"]').val() == ""){
-                return;
-            };if ($(this).parent().find('input[name="description"]').val() == ""){
                 return;
             };
             $(this).parent().find(".colt").show();
@@ -113,23 +82,11 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 method: "post",
-                url: "/beer_e/save",
+                url: "/type_e/save",
                 data: form.serialize(),
                 success: function(){
                     that.parent().find(".name").html(
                         that.parent().find('input[name="name"]').val()
-                    );
-                    that.parent().find(".description").html(
-                        that.parent().find('input[name="description"]').val()
-                    );
-                    that.parent().find(".type").html(
-                        that.parent().find('select[id="type"]').find('option:selected').text()
-                    );
-                    that.parent().find(".manufacturer").html(
-                        that.parent().find('select[id="manufacts"]').find('option:selected').text()
-                    );
-                    that.parent().find(".address").html(
-                        that.parent().find('input[name="address"]').val()
                     );
                 },
                 error: function () {
@@ -142,13 +99,11 @@
                 return;
             };
             var cpy = $("#append").html();
-            $("#beerlist").append('<li style="list-style-type: none;">' + cpy + '</li>');
+            $("#typelist").append('<li style="list-style-type: none;">' + cpy + '</li>');
 
         });
         $(document).on('click', ".create", function () {
             if ($(this).parent().find('input[name="name"]').val() == ""){
-                return;
-            };if ($(this).parent().find('input[name="description"]').val() == ""){
                 return;
             };
 
@@ -164,22 +119,13 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 method: "post",
-                url: "/beer_e/create",
+                url: "/type_e/create",
                 data: form.serialize(),
                 success: function(resp){
                     that.parent().find(".name").html(
                         that.parent().find('input[name="name"]').val()
                     );
-                    that.parent().find(".description").html(
-                        that.parent().find('input[name="description"]').val()
-                    );
-                    that.parent().find(".type").html(
-                        that.parent().find('select[name="type_id"]').find('option:selected').text()
-                    );
-                    that.parent().find(".manufacturer").html(
-                        that.parent().find('select[name="manufacturer_id"]').find('option:selected').text()
-                    );
-                 that.parent().find('input[name="id"]').val(resp);
+                    that.parent().find('input[name="id"]').val(resp);
                 },
                 error: function () {
 
@@ -199,7 +145,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 method: "post",
-                url: "/beer_e/delete",
+                url: "/type_e/delete",
                 data: form.serialize(),
                 success: function(){
                     that.parent().parent().remove();
